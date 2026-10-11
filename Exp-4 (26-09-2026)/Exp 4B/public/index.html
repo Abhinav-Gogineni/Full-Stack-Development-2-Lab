@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Management SPA</title>
+</head>
+<body>
+    <h2>Student Management</h2>
+
+    <input id="name" placeholder="Enter name">
+    <input id="course" placeholder="Enter course">
+    <button onclick="addStudent()">Add Student</button>
+
+    <h3>Student List</h3>
+    <ul id="list"></ul>
+
+    <script>
+        // GET: Display students
+        async function loadStudents() {
+            const res = await fetch("/api/students");
+            const students = await res.json();
+
+            const list = document.getElementById("list");
+            list.innerHTML = "";
+
+            students.forEach(student => {
+                const li = document.createElement("li");
+                li.textContent = student.name + " - " + student.course + " ";
+
+                const btn = document.createElement("button");
+                btn.textContent = "Delete";
+                btn.onclick = () => deleteStudent(student.id);
+
+                li.appendChild(btn);
+                list.appendChild(li);
+            });
+        }
+
+        // POST: Add student
+        async function addStudent() {
+            const name = document.getElementById("name").value;
+            const course = document.getElementById("course").value;
+
+            if (!name || !course) {
+                alert("Please enter name and course");
+                return;
+            }
+
+            await fetch("/api/students", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, course })
+            });
+
+            document.getElementById("name").value = "";
+            document.getElementById("course").value = "";
+
+            loadStudents();
+        }
+
+        // DELETE: Remove student
+        async function deleteStudent(id) {
+            await fetch("/api/students/" + id, {
+                method: "DELETE"
+            });
+
+            loadStudents();
+        }
+
+        loadStudents();
+    </script>
+</body>
+</html>
