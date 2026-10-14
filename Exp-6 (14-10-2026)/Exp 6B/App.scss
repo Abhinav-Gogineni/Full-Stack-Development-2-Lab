@@ -1,0 +1,19 @@
+$primary-color: #2563eb;
+$text-color: #1e293b;
+$background-color: #dbeafe;
+
+.container {
+  .card {
+    border: 2px solid $primary-color;
+
+    h2 {
+      color: $text-color;
+    }
+
+    button {
+      &:hover {
+        background-color: darken($primary-color, 10%);
+      }
+    }
+  }
+}
